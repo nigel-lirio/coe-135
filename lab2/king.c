@@ -6,9 +6,9 @@
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
+
 int main(int argc, char *argv[]) {
     if(argc == 2){
-        
         do{
             int trials = 0, complete = 0, fif_io ;
             char* code = malloc(4 * sizeof(char));
@@ -31,16 +31,28 @@ int main(int argc, char *argv[]) {
                     
                     if (strcmp(inp, code) == 0)
                     {
+                        FILE * hof;
+                        hof = fopen("halloffame.txt", "a");
+                        fprintf(hof, "%s\n", pid);
+                        fclose(hof);
                         complete = 1;
                         close(fif_io);
+                        kill(atoi(pid), SIGUSR1);
                         break;
                     }
                     
+                    if (strlen(inp) > 3){
+                        printf("INVALID INPUT - KILLING PROCESS\n");
+                        break;
+                    }
                     
 
                 }
                 free(inp);
-                kill(atoi(pid), SIGKILL);
+                if(complete == 0){
+
+                    kill(atoi(pid), SIGUSR2);
+                }
                 free(pid);
             }while(complete == 0);
             free(code);

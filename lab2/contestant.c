@@ -7,17 +7,41 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+pid_t childB= -1;
+static void win_kill(int sign){
+ 
+    if(sign == SIGUSR1){
+        FILE * wri;
+        wri = fopen("record.txt", "a");
+        fprintf(wri,"%d - W\n", childB);
+        fclose(wri);
+    }
+    exit(sign);
+}
+static void death_kill(int sign){
 
+    if(sign == SIGUSR2){
+        FILE * wri;
+        wri = fopen("record.txt", "a");
+        fprintf(wri,"%d - L\n", childB);
+        fclose(wri);
+    }
+    exit(sign);
+}
 int main(int argc, char *argv[]){
     if (argc == 2)
     {
         /* code */
+        
         mkfifo(argv[1], 0666);
         while (1)
         {
             printf("PARENT PID: %d \n", getpid());
-            if (fork() == 0)
+            if ( fork() == 0)
             {
+                signal(SIGUSR1, win_kill);
+                signal(SIGUSR2, death_kill);
+                childB = getpid();
                 printf("CHILD: %d \n", getpid());
                 int fifo_io = open(argv[1], O_WRONLY);
                 char* z = malloc(9 * sizeof(char));
@@ -33,7 +57,6 @@ int main(int argc, char *argv[]){
                 }
                 
             }
-            
             wait(NULL);
             
         }
