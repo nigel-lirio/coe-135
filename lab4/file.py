@@ -1,0 +1,6 @@
+pt = open("fp.txt", "w+")
+pt.write("Nigel James")
+pt.close()
+rpt = open("fp.txt", "r")
+print(rpt.read())
+rpt.close()
