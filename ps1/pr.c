@@ -9,7 +9,7 @@ void process1(int *x) {
     *x = 1; 
 }
 void process2() {
-// <YOUR CODE HERE>
+    
 }
 
 int data = 0;
